@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <script src="html2pdf.bundle.js"></script>
+    <title>Generate Your Resume</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .page-title {
+            margin: 0;
+        }
+
+        .page-subtitle {
+            margin: 5px 0;
+        }
+
+        .main-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; 
+        }
+
+        .form-container {
+            display: flex;
+            width: 80%;
+        }
+
+        .form-left,
+        .form-right {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .form-left label,
+        .form-right label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .form-left input,
+        .form-left textarea,
+        .form-right input,
+        .form-right textarea,
+        .form-left select,
+        .form-right select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        .form-right button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .form-right button:hover {
+            background-color: #45a049;
+        }
+
+        .submit {
+            margin-top: 20px;
+        }
+
+        .resume-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .left-column {
+            width: 48%;
+            order: 1;
+        }
+
+        .right-column {
+            width: 48%;
+            order: 2;
+        }
+
+        .resume-image {
+            max-width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .section-heading {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 0;
+        }
+
+        .bullet-list {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+
+        .timeline {
+            margin-top: 20px;
+        }
+
+        .timeline-item {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1 class="page-title">Generate Your Resume</h1>
+        <p class="page-subtitle">Enter your details:</p>
+    </header>
+
+    <section class="main-section">
+        <div class="form-container">
+            <div class="form-left">
+                <form id="resumeForm" onsubmit="return false;">
+                    <label for="firstName">First Name:</label>
+                    <input type="text" id="firstName" required>
+
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" id="lastName" required>
+
+                    <label for="phoneNumber">Phone Number:</label>
+                    <input type="tel" id="phoneNumber" required>
+
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" required>
+
+                    <label for="linkedin">LinkedIn Profile:</label>
+                    <input type="url" id="linkedin">
+
+                    <label for="github">GitHub Profile:</label>
+                    <input type="url" id="github">
+
+                    <label for="uploadImage">Upload Image: [size of image will be same as uploaded]</label>
+                    <input type="file" id="uploadImage">
+
+                    <label for="about">About:</label>
+                    <textarea id="about" rows="4"></textarea>
+                </form>
+            </div>
+
+            <div class="form-right">
+                <div id="educationSection">
+                    <h2>Education</h2>
+                    <button onclick="addSection('education')">Add Section</button>
+                </div>
+
+                <div id="skillsSection">
+                    <h2>Skills</h2>
+                    <button onclick="addSection('skills')">Add Skills</button>
+                </div>
+
+                <div id="projectsSection">
+                    <h2>Projects</h2>
+                    <button onclick="addSection('projects')">Add Projects</button>
+                </div>
+
+                <div id="languagesSection">
+                    <h2>Languages</h2>
+                    <button onclick="addSection('languages')">Add Languages</button>
+                </div>
+
+                <div id="workExperienceSection">
+                    <h2>Work Experience</h2>
+                    <button onclick="addSection('workExperience')">Add Work Experience</button>
+                </div>
+            </div>
+        </div>
+        <div class="submit">
+            <button onclick="generateResume()" style="font-size: 24px; background-color: #4CAF50; color: white;">PREVIEW</button>
+        </div>
+        <br>
+        <div>
+            <button onclick="generateResume1()" style="font-size: 24px; background-color: rgb(85, 20, 147); color: white;">TEMPLATE DESIGN 1</button>
+<button onclick="generateResume2()" style="font-size: 24px; background-color: rgb(234, 152, 39); color: white;">TEMPLATE DESIGN 2</button>
+        </div>
+        <br>
+        <div>
+<button onclick="downloadResume()" style="font-size: 24px; background-color: #4CAF50; color: white;">Download Resume</button>
+
+
+        </div>
+    </section>
+
+    <script>
+      
+        let firstNameValue = '';
+        let lastNameValue = '';
+        let phoneNumberValue = '';
+        let emailValue = '';
+        let linkedinValue = '';
+        let githubValue = '';
+       
+        let aboutValue = '';
+        let educationValues = [];
+        let skillsValues = [];
+        let projectsValues = [];
+        let languagesValues = [];
+        let workExperienceValues = [];
+        let uploadImageValue = null;
+
+        function addSection(sectionType) {
+            const sectionContainer = document.getElementById(`${sectionType}Section`);
+
+        
+            if (sectionType === 'workExperience') {
+                const workExperienceContainer = document.createElement('div');
+                workExperienceContainer.classList.add('work-experience-container');
+
+                const newTextInput = document.createElement('input');
+                newTextInput.type = 'text';
+                newTextInput.classList.add('weField');
+                newTextInput.placeholder = 'Enter Work Experience';
+
+                workExperienceContainer.appendChild(newTextInput);
+                sectionContainer.appendChild(workExperienceContainer);
+            } else {
+               
+                const newTextInput = document.createElement('input');
+                newTextInput.type = 'text';
+                newTextInput.placeholder = `Enter ${sectionType}`;
+                sectionContainer.appendChild(newTextInput);
+
+               
+                switch (sectionType) {
+                    case 'education':
+                        educationValues.push(newTextInput.value);
+                        break;
+                    case 'skills':
+                        skillsValues.push(newTextInput.value);
+                        break;
+                    case 'projects':
+                        projectsValues.push(newTextInput.value);
+                        break;
+                    case 'languages':
+                        languagesValues.push(newTextInput.value);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        function generateResume() {
+        
+            firstNameValue = document.getElementById('firstName').value;
+            lastNameValue = document.getElementById('lastName').value;
+            phoneNumberValue = document.getElementById('phoneNumber').value;
+            emailValue = document.getElementById('email').value;
+            linkedinValue = document.getElementById('linkedin').value;
+            githubValue = document.getElementById('github').value;
+            uploadImageValue = document.getElementById('uploadImage').value;
+            aboutValue = document.getElementById('about').value;
+            const uploadImageInput = document.getElementById('uploadImage');
+    uploadImageValue = uploadImageInput.files[0];
+
+            
+            educationValues = collectSectionValues('education');
+            skillsValues = collectSectionValues('skills');
+            projectsValues = collectSectionValues('projects');
+            languagesValues = collectSectionValues('languages');
+            workExperienceValues = collectSectionValues('workExperience');
+
+          
+            const newPage = window.open('', '_blank');
+
+           
+            const resumeContent = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <link rel="stylesheet" href="styles.css">
+                    <title>Generated Resume</title>
+                    <style>
+                        body {
+                            margin: 0;
+                            padding: 0;
+                            font-family: 'Arial', sans-serif;
+                            background-color: #f4f4f4;
+                            color: #333;
+                        }
+
+                        .resume-container {
+                            max-width: 800px;
+                            margin: 20px auto;
+                            padding: 20px;
+                            border: 1px solid #333;
+                            display: flex;
+                            justify-content: space-between;
+                            flex-wrap: wrap;
+                        }
+
+                        .left-column {
+                            width: 48%;
+                            order: 1;
+                        }
+
+                        .right-column {
+                            width: 48%;
+                            order: 2;
+                        }
+
+                        .resume-image {
+                            max-width: 100%;
+                            margin-bottom: 10px;
+                        }
+
+                        .section-heading {
+                            font-size: 1.5em;
+                            font-weight: bold;
+                            margin-top: 0;
+                        }
+
+                        .bullet-list {
+                            list-style-type: disc;
+                            margin-left: 20px;
+                        }
+
+                        .timeline {
+                            margin-top: 20px;
+                        }
+
+                        .timeline-item {
+                            margin-bottom: 20px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="resume-container">
+                        <div class="left-column">
+                         
+                            <img src="${uploadImageValue ? URL.createObjectURL(uploadImageValue) : ''}" alt="Profile Image" class="resume-image">
+                            <p><strong>About:</strong> ${aboutValue}</p>
+                            <h3 class="section-heading">Skills</h3>
+                            <ul class="bullet-list">
+                                ${skillsValues.map(skill => `<li>${skill}</li>`).join('')}
+                            </ul>
+                            <h3 class="section-heading">Languages</h3>
+                            <ul class="bullet-list">
+                                ${languagesValues.map(language => `<li>${language}</li>`).join('')}
+                            </ul>
+                        </div>
+
+                        <div class="right-column">
+                            <h1>${firstNameValue} ${lastNameValue}</h1>
+                            <p><strong>Email:</strong> ${emailValue}</p>
+                            <p><strong>Phone Number:</strong> ${phoneNumberValue}</p>
+                            <p><strong>LinkedIn:</strong> ${linkedinValue}</p>
+                            <p><strong>GitHub:</strong> ${githubValue}</p>
+
+                            <div class="timeline">
+                                <h2 class="section-heading">Education</h2>
+                                <div class="timeline-item">
+                                    ${educationValues.map(education => `<h3>${education}</h3>`).join('')}
+                                </div>
+                            </div>
+
+                            <div class="timeline">
+                                <h2 class="section-heading">Projects</h2>
+                                ${projectsValues.map(project => `
+                                    <div class="timeline-item">
+                                        <h3>${project}</h3>
+                                    </div>
+                                `).join('')}
+                            </div>
+
+                            <div class="timeline">
+                                <h2 class="section-heading">Work Experience</h2>
+                                ${workExperienceValues.map(experience => `
+                                    <div class="timeline-item">
+                                        <h3>${experience}</h3>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                        
+          
+                         </div>
+                    </div>
+                </body>
+                </html>
+            `;
+
+          
+            newPage.document.write(resumeContent);
+        }
+
+
+        function generateResume1() {
+        
+        firstNameValue = document.getElementById('firstName').value;
+        lastNameValue = document.getElementById('lastName').value;
+        phoneNumberValue = document.getElementById('phoneNumber').value;
+        emailValue = document.getElementById('email').value;
+        linkedinValue = document.getElementById('linkedin').value;
+        githubValue = document.getElementById('github').value;
+        uploadImageValue = document.getElementById('uploadImage').value;
+        aboutValue = document.getElementById('about').value;
+        const uploadImageInput = document.getElementById('uploadImage');
+uploadImageValue = uploadImageInput.files[0];
+
+        
+        educationValues = collectSectionValues('education');
+        skillsValues = collectSectionValues('skills');
+        projectsValues = collectSectionValues('projects');
+        languagesValues = collectSectionValues('languages');
+        workExperienceValues = collectSectionValues('workExperience');
+
+      
+        const newPage = window.open('', '_blank');
+
+       
+        const resumeContent = `
+        
+        <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Generated Resume</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .resume-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 2px double #5241a3;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            background: linear-gradient(135deg, #3498db, #8e44ad);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .left-column,
+        .right-column {
+            width: 48%;
+            box-sizing: border-box;
+            padding: 20px;
+        }
+
+        .left-column {
+            border-right: 2px solid #5241a3;
+        }
+
+        .resume-image {
+            max-width: 100%;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .section-heading {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 0;
+            color: #fff;
+        }
+
+        .bullet-list {
+            list-style-type: disc;
+            margin-left: 20px;
+            color: #fff;
+        }
+
+        .timeline {
+            margin-top: 20px;
+        }
+
+        .timeline-item {
+            margin-bottom: 20px;
+        }
+
+        h1,
+        p {
+            margin: 0;
+        }
+
+        p {
+            color: #ccc;
+            margin-bottom: 10px;
+        }
+
+        strong {
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="resume-container">
+        <div class="left-column">
+            <img src="${uploadImageValue ? URL.createObjectURL(uploadImageValue) : ''}" alt="Profile Image"
+                class="resume-image">
+            <p><strong>About:</strong> ${aboutValue}</p>
+            <h3 class="section-heading">Skills</h3>
+            <ul class="bullet-list">
+                ${skillsValues.map(skill => `<li>${skill}</li>`).join('')}
+            </ul>
+            <h3 class="section-heading">Languages</h3>
+            <ul class="bullet-list">
+                ${languagesValues.map(language => `<li>${language}</li>`).join('')}
+            </ul>
+        </div>
+
+        <div class="right-column">
+            <h1>${firstNameValue} ${lastNameValue}</h1>
+            <p><strong>Email:</strong> ${emailValue}</p>
+            <p><strong>Phone Number:</strong> ${phoneNumberValue}</p>
+            <p><strong>LinkedIn:</strong> ${linkedinValue}</p>
+            <p><strong>GitHub:</strong> ${githubValue}</p>
+
+            <div class="timeline">
+                <h2 class="section-heading">Education</h2>
+                <div class="timeline-item">
+                    ${educationValues.map(education => `<h3>${education}</h3>`).join('')}
+                </div>
+            </div>
+
+            <div class="timeline">
+                <h2 class="section-heading">Projects</h2>
+                ${projectsValues.map(project => `
+                    <div class="timeline-item">
+                        <h3>${project}</h3>
+                    </div>
+                `).join('')}
+            </div>
+
+            <div class="timeline">
+                <h2 class="section-heading">Work Experience</h2>
+                ${workExperienceValues.map(experience => `
+                    <div class="timeline-item">
+                        <h3>${experience}</h3>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+        
+    </div>
+    
+</body>
+
+</html>
+
+        `;
+
+      
+        newPage.document.write(resumeContent);
+    }
+
+
+
+
+
+    function generateResume2() {
+        
+        firstNameValue = document.getElementById('firstName').value;
+        lastNameValue = document.getElementById('lastName').value;
+        phoneNumberValue = document.getElementById('phoneNumber').value;
+        emailValue = document.getElementById('email').value;
+        linkedinValue = document.getElementById('linkedin').value;
+        githubValue = document.getElementById('github').value;
+        uploadImageValue = document.getElementById('uploadImage').value;
+        aboutValue = document.getElementById('about').value;
+        const uploadImageInput = document.getElementById('uploadImage');
+uploadImageValue = uploadImageInput.files[0];
+
+        
+        educationValues = collectSectionValues('education');
+        skillsValues = collectSectionValues('skills');
+        projectsValues = collectSectionValues('projects');
+        languagesValues = collectSectionValues('languages');
+        workExperienceValues = collectSectionValues('workExperience');
+
+      
+        const newPage = window.open('', '_blank');
+
+       
+        const resumeContent = `
+        <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated Resume</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .resume-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 2px double #5241a3;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            background: linear-gradient(135deg, #f39c12, #27ae60); /* Replace with your orange and green colors */
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .left-column,
+        .right-column {
+            width: 48%;
+            box-sizing: border-box;
+            padding: 20px;
+        }
+
+        .left-column {
+            border-right: 2px solid #5241a3;
+        }
+
+        .resume-image {
+            max-width: 100%;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .section-heading {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 0;
+            color: #fff;
+        }
+
+        .bullet-list {
+            list-style-type: disc;
+            margin-left: 20px;
+            color: #fff;
+        }
+
+        .timeline {
+            margin-top: 20px;
+        }
+
+        .timeline-item {
+            margin-bottom: 20px;
+        }
+
+        h1,
+        p {
+            margin: 0;
+        }
+
+        p {
+            color: #ccc;
+            margin-bottom: 10px;
+        }
+
+        strong {
+            color: #fff;
+        }
+    </style>
+   
+   
+</head>
+
+<body>
+    <div class="resume-container">
+        <div class="left-column">
+            <img src="${uploadImageValue ? URL.createObjectURL(uploadImageValue) : ''}" alt="Profile Image"
+                class="resume-image">
+            <p><strong>About:</strong> ${aboutValue}</p>
+            <h3 class="section-heading">Skills</h3>
+            <ul class="bullet-list">
+                ${skillsValues.map(skill => `<li>${skill}</li>`).join('')}
+            </ul>
+            <h3 class="section-heading">Languages</h3>
+            <ul class="bullet-list">
+                ${languagesValues.map(language => `<li>${language}</li>`).join('')}
+            </ul>
+        </div>
+
+        <div class="right-column">
+            <h1>${firstNameValue} ${lastNameValue}</h1>
+            <p><strong>Email:</strong> ${emailValue}</p>
+            <p><strong>Phone Number:</strong> ${phoneNumberValue}</p>
+            <p><strong>LinkedIn:</strong> ${linkedinValue}</p>
+            <p><strong>GitHub:</strong> ${githubValue}</p>
+
+            <div class="timeline">
+                <h2 class="section-heading">Education</h2>
+                <div class="timeline-item">
+                    ${educationValues.map(education => `<h3>${education}</h3>`).join('')}
+                </div>
+            </div>
+
+            <div class="timeline">
+                <h2 class="section-heading">Projects</h2>
+                ${projectsValues.map(project => `
+                    <div class="timeline-item">
+                        <h3>${project}</h3>
+                    </div>
+                `).join('')}
+            </div>
+
+            <div class="timeline">
+                <h2 class="section-heading">Work Experience</h2>
+                ${workExperienceValues.map(experience => `
+                    <div class="timeline-item">
+                        <h3>${experience}</h3>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+        <div class="download-button">
+            <button onclick="downloadResume()">Download Resume</button>
+        </div>
+   
+    </div>
+</body>
+
+</html>
+
+        `;
+
+      
+        newPage.document.write(resumeContent);
+    }
+
+
+
+
+
+        function collectSectionValues(sectionType) {
+            const sectionContainer = document.getElementById(`${sectionType}Section`);
+            const sectionValues = [];
+
+            
+            const inputFields = sectionContainer.querySelectorAll('input');
+            inputFields.forEach(input => {
+                sectionValues.push(input.value);
+            });
+
+            return sectionValues;
+        }
+
+        function downloadResume() {
+    window.print();
+}
+      
+           
+        
+    </script>
+
+
+
+</body>
+
+</html>

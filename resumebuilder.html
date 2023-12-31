@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Resume Builder</title>
+    <script type="text/javascript">
+        function redirectToBuildPage() {
+    window.location.href = "build.html";
+}
+    </script>
+    <style>
+body {
+    
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to right, #4A90E2, #1E3A8A, #663399);
+    color: #fff;
+}
+
+header {
+    background-color: #333;
+    padding: 10px;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.main-section {
+    text-align: center;
+   
+}
+.start-building {
+    margin-top: 30px;
+    background-color: rgb(51, 34, 62);
+    
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #663399;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+footer {
+    background-color: #333;
+    padding: 20px;
+    text-align: center;
+}
+
+.footer-details p {
+    margin: 5px 0;
+}
+
+.footer-details a {
+    color: #fff;
+}
+.topic { 
+    font-size:large; font-weight:bolder;
+    background-color: indianred;
+    
+}
+.container {
+    margin:  30px auto;
+    width: 1000px;
+}
+
+.container > div {
+    width: 33%;
+}
+.col1 {
+    float: left;
+}
+.col2 {
+    float: right;
+}
+.col3 {
+    margin: auto;
+}
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#build">Build</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </nav>
+    </header>
+     
+    <section class="main-section">
+        <div class="quote">
+            <div class="topic">
+                <h1 style="font-size: 300%;">Resume Builder</h1>
+            </div>
+            
+            <p style="font-size: 250%;">Build Your Perfect Resume - Start here, Land Job Offers</p>
+        </div>
+
+        <div class="start-building">
+            <p style="font-size: larger;">Click Below to Start Building In 3 easy Steps:</p>
+            <button onclick="redirectToBuildPage()"; font-size: 190%; font-weight: bold;">BUILD</button>
+        </div>
+        </section>
+        <div class="Images">
+            <div class="container">
+                <div class="col1">
+                    <img src="img1.png" width="250px" height="250px"/>
+                    <h1>Enter Your Details</h1>
+                </div>
+                <div class="col2">
+                    <img src="img2.png" width="250px" height="250px"/>
+                    <h1>Download and Save</h1>
+                   
+                </div>
+                <div class="col3">
+                    <img src="img3.jpg" width="250px" height="250px"/>
+                    <h1 style="text-align:center;">Choose Template Design</h1>
+                   
+                </div>
+            </div>
+        </div>
+   
+<br>
+<br>
+<br>
+<br>
+<br>
+<footer>
+    <div class="footer-details">
+        <p>CONTACT US: </p>
+        <p>Phone: 823-456-7890</p>
+        <p>
+            <img src="lll.png" alt="LinkedIn Icon" width="3%">
+            <img src="ttt.png" alt="Twitter Icon" width="3%">
+            <img src="iii.jpg" alt="Instagram Icon" width="3%">
+        </p>
+        
+    </div>
+</footer>
+</body>
+</html>
